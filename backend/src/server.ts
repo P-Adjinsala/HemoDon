@@ -1,3 +1,5 @@
+console.log("SERVER FILE =>", __filename);
+
 import app from "./app";
 import { env } from "./config/env";
 import { connectDatabase } from "./config/db";

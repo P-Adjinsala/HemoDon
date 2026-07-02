@@ -1,71 +1,46 @@
 import { Request, Response } from "express";
-import Donation from "../models/Donation";
+import Role from "../models/Role";
 
-export const getAllDonations = async (
+export const getAllRoles = async (
   _req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    const donations = await Donation.findAll({
-      include: ["donor", "center"]
-    });
-
-    console.log(
-      "DONATIONS =>",
-      JSON.stringify(
-        donations.map((d) => d.toJSON()),
-        null,
-        2
-      )
-    );
+    const roles = await Role.findAll();
 
     res.status(200).json({
       success: true,
-      count: donations.length,
-      data: donations
+      count: roles.length,
+      data: roles
     });
   } catch (error) {
     console.error(error);
 
     res.status(500).json({
       success: false,
-      message: "Failed to fetch donations"
+      message: "Failed to fetch roles"
     });
   }
 };
 
-export const getDonationById = async (
+export const getRoleById = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    const donation = await Donation.findByPk(
-      Number(req.params.id),
-      {
-        include: ["donor", "center"]
-      }
-    );
+    const role = await Role.findByPk(Number(req.params.id));
 
-    console.log(
-      "DONATION =>",
-      JSON.stringify(
-        donation?.toJSON(),
-        null,
-        2
-      )
-    );
-
-    if (!donation) {
+    if (!role) {
       res.status(404).json({
         success: false,
-        message: "Donation not found"
+        message: "Role not found"
       });
       return;
     }
 
     res.status(200).json({
       success: true,
-      data: donation
+      data: role
     });
   } catch (error) {
     console.error(error);
@@ -76,47 +51,47 @@ export const getDonationById = async (
   }
 };
 
-export const createDonation = async (
+export const createRole = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    const donation = await Donation.create(req.body);
+    const role = await Role.create(req.body);
 
     res.status(201).json({
       success: true,
-      data: donation
+      data: role
     });
   } catch (error) {
     console.error(error);
 
     res.status(500).json({
       success: false,
-      message: "Failed to create donation"
+      message: "Failed to create role"
     });
   }
 };
 
-export const updateDonation = async (
+export const updateRole = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    const donation = await Donation.findByPk(Number(req.params.id));
+    const role = await Role.findByPk(Number(req.params.id));
 
-    if (!donation) {
+    if (!role) {
       res.status(404).json({
         success: false,
-        message: "Donation not found"
+        message: "Role not found"
       });
       return;
     }
 
-    await donation.update(req.body);
+    await role.update(req.body);
 
     res.status(200).json({
       success: true,
-      data: donation
+      data: role
     });
   } catch (error) {
     console.error(error);
@@ -127,26 +102,26 @@ export const updateDonation = async (
   }
 };
 
-export const deleteDonation = async (
+export const deleteRole = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    const donation = await Donation.findByPk(Number(req.params.id));
+    const role = await Role.findByPk(Number(req.params.id));
 
-    if (!donation) {
+    if (!role) {
       res.status(404).json({
         success: false,
-        message: "Donation not found"
+        message: "Role not found"
       });
       return;
     }
 
-    await donation.destroy();
+    await role.destroy();
 
     res.status(200).json({
       success: true,
-      message: "Donation deleted successfully"
+      message: "Role deleted successfully"
     });
   } catch (error) {
     console.error(error);

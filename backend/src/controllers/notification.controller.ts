@@ -1,71 +1,48 @@
 import { Request, Response } from "express";
-import Donation from "../models/Donation";
+import Notification from "../models/Notification";
 
-export const getAllDonations = async (
+export const getAllNotifications = async (
   _req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    const donations = await Donation.findAll({
-      include: ["donor", "center"]
-    });
-
-    console.log(
-      "DONATIONS =>",
-      JSON.stringify(
-        donations.map((d) => d.toJSON()),
-        null,
-        2
-      )
-    );
+    const notifications = await Notification.findAll();
 
     res.status(200).json({
       success: true,
-      count: donations.length,
-      data: donations
+      count: notifications.length,
+      data: notifications
     });
   } catch (error) {
     console.error(error);
 
     res.status(500).json({
       success: false,
-      message: "Failed to fetch donations"
+      message: "Failed to fetch notifications"
     });
   }
 };
 
-export const getDonationById = async (
+export const getNotificationById = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    const donation = await Donation.findByPk(
-      Number(req.params.id),
-      {
-        include: ["donor", "center"]
-      }
+    const notification = await Notification.findByPk(
+      Number(req.params.id)
     );
 
-    console.log(
-      "DONATION =>",
-      JSON.stringify(
-        donation?.toJSON(),
-        null,
-        2
-      )
-    );
-
-    if (!donation) {
+    if (!notification) {
       res.status(404).json({
         success: false,
-        message: "Donation not found"
+        message: "Notification not found"
       });
       return;
     }
 
     res.status(200).json({
       success: true,
-      data: donation
+      data: notification
     });
   } catch (error) {
     console.error(error);
@@ -76,47 +53,49 @@ export const getDonationById = async (
   }
 };
 
-export const createDonation = async (
+export const createNotification = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    const donation = await Donation.create(req.body);
+    const notification = await Notification.create(req.body);
 
     res.status(201).json({
       success: true,
-      data: donation
+      data: notification
     });
   } catch (error) {
     console.error(error);
 
     res.status(500).json({
       success: false,
-      message: "Failed to create donation"
+      message: "Failed to create notification"
     });
   }
 };
 
-export const updateDonation = async (
+export const updateNotification = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    const donation = await Donation.findByPk(Number(req.params.id));
+    const notification = await Notification.findByPk(
+      Number(req.params.id)
+    );
 
-    if (!donation) {
+    if (!notification) {
       res.status(404).json({
         success: false,
-        message: "Donation not found"
+        message: "Notification not found"
       });
       return;
     }
 
-    await donation.update(req.body);
+    await notification.update(req.body);
 
     res.status(200).json({
       success: true,
-      data: donation
+      data: notification
     });
   } catch (error) {
     console.error(error);
@@ -127,26 +106,28 @@ export const updateDonation = async (
   }
 };
 
-export const deleteDonation = async (
+export const deleteNotification = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    const donation = await Donation.findByPk(Number(req.params.id));
+    const notification = await Notification.findByPk(
+      Number(req.params.id)
+    );
 
-    if (!donation) {
+    if (!notification) {
       res.status(404).json({
         success: false,
-        message: "Donation not found"
+        message: "Notification not found"
       });
       return;
     }
 
-    await donation.destroy();
+    await notification.destroy();
 
     res.status(200).json({
       success: true,
-      message: "Donation deleted successfully"
+      message: "Notification deleted successfully"
     });
   } catch (error) {
     console.error(error);

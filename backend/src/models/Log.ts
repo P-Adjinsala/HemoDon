@@ -10,29 +10,27 @@ import {
 import { sequelize } from "../config/db";
 import User from "./User";
 
-class Notification extends Model<
-  InferAttributes<Notification>,
-  InferCreationAttributes<Notification>
+class Log extends Model<
+  InferAttributes<Log>,
+  InferCreationAttributes<Log>
 > {
   declare id: CreationOptional<number>;
 
   declare user_id: number | null;
 
-  declare title: string;
+  declare action: string;
 
-  declare message: string;
+  declare entity_name: string;
 
-  declare type: CreationOptional<
-    "Info" | "Warning" | "Success" | "Critical"
-  >;
+  declare entity_id: number;
 
-  declare is_read: CreationOptional<boolean>;
+  declare created_at: CreationOptional<Date>;
 
   // ─── Association ─────────────────────────────
   declare user?: NonAttribute<User>;
 }
 
-Notification.init(
+Log.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -45,36 +43,30 @@ Notification.init(
       allowNull: true
     },
 
-    title: {
+    action: {
       type: DataTypes.STRING(255),
       allowNull: false
     },
 
-    message: {
-      type: DataTypes.TEXT,
+    entity_name: {
+      type: DataTypes.STRING(100),
       allowNull: false
     },
 
-    type: {
-      type: DataTypes.ENUM(
-        "Info",
-        "Warning",
-        "Success",
-        "Critical"
-      ),
-      defaultValue: "Info"
+    entity_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false
     },
 
-    is_read: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false
+    created_at: {
+      type: DataTypes.DATE
     }
   },
   {
     sequelize,
-    tableName: "notifications",
+    tableName: "logs",
     timestamps: false
   }
 );
 
-export default Notification;
+export default Log;
